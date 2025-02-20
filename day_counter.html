@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Working Days Counter</title>
+  <script>
+    // Format a Date object into a readable string (e.g., March 1, 2025)
+    function formatDate(date) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString(undefined, options);
+    }
+
+    // Count working days (Monday to Friday) until a target date
+    function workingDaysUntil(targetDate) {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
+      targetDate.setHours(0, 0, 0, 0);
+      
+      if (targetDate < today) return 0; // If the target date has passed
+      
+      let workingDays = 0;
+      let currentDate = new Date(today);
+      
+      while (currentDate <= targetDate) {
+        const dayOfWeek = currentDate.getDay(); // Sunday = 0, Saturday = 6
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          workingDays++;
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return workingDays;
+    }
+
+    // Update the page with the dynamic target date and working days count
+    function updateCounter() {
+      // JavaScript Date constructor uses 0-indexed months: 0 = January, so 2 = March.
+      const targetDate = new Date(2025, 2, 19); // March 1, 2025
+      const count = workingDaysUntil(targetDate);
+      
+      // Dynamically update the header text with the formatted target date.
+      document.getElementById("targetDateText").textContent = formatDate(targetDate);
+      document.getElementById("counter").textContent = count;
+    }
+
+    window.onload = updateCounter;
+  </script>
+</head>
+<body>
+  <h1>Working Days Counter</h1>
+  <p>Working days until <span id="targetDateText"></span>:</p>
+  <div id="counter" style="font-size: 2em; font-weight: bold;"></div>
+</body>
+</html>
