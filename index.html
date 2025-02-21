@@ -73,7 +73,7 @@
     // Update the counters on page load
     function updateCounters() {
       // Note: Months are 0-indexed in JavaScript (2 = March)
-      const targetDate = new Date(2025, 5, 19); // March 19, 2025
+      const targetDate = new Date(2025, 2, 19); // March 19, 2025
       const workingDays = workingDaysUntil(targetDate);
       document.getElementById("workingDaysCounter").textContent = workingDays;
       document.getElementById("targetDateText").textContent = formatDate(targetDate);
