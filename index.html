@@ -2,21 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Working Days Counter</title>
+  <title>Dashboard: Working Days & Current Week Counter</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .section {
+      flex: 1;
+      min-width: 300px;
+      padding: 20px;
+      border: 1px solid #fff;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    .section h2, .section h1 {
+      margin-top: 0;
+    }
+    .counter {
+      font-size: 2em;
+      font-weight: bold;
+    }
+  </style>
   <script>
-    // Format a Date object into a readable string (e.g., March 1, 2025)
+    // Format a Date object into a readable string, e.g., "March 1, 2025"
     function formatDate(date) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return date.toLocaleDateString(undefined, options);
     }
 
-    // Count working days (Monday to Friday) until a target date
+    // Count working days (Monday to Friday) until the target date
     function workingDaysUntil(targetDate) {
       let today = new Date();
       today.setHours(0, 0, 0, 0);
       targetDate.setHours(0, 0, 0, 0);
       
-      if (targetDate < today) return 0; // If the target date has passed
+      if (targetDate < today) return 0;
       
       let workingDays = 0;
       let currentDate = new Date(today);
@@ -31,23 +59,43 @@
       return workingDays;
     }
 
-    // Update the page with the dynamic target date and working days count
-    function updateCounter() {
-      // JavaScript Date constructor uses 0-indexed months: 0 = January, so 2 = March.
-      const targetDate = new Date(2025, 2, 19); // March 1, 2025
-      const count = workingDaysUntil(targetDate);
-      
-      // Dynamically update the header text with the formatted target date.
-      document.getElementById("targetDateText").textContent = formatDate(targetDate);
-      document.getElementById("counter").textContent = count;
+    // Calculate the current ISO week number
+    function getCurrentWeekNumber() {
+      let date = new Date();
+      // Adjust to nearest Thursday: current date + 4 - current day number (or 0 if Sunday)
+      date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+      let yearStart = new Date(date.getFullYear(), 0, 1);
+      let weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+      return weekNo;
     }
 
-    window.onload = updateCounter;
+    // Update the counters on page load
+    function updateCounters() {
+      // Note: Months are 0-indexed in JavaScript (2 = March)
+      const targetDate = new Date(2025, 2, 19); // March 19, 2025
+      const workingDays = workingDaysUntil(targetDate);
+      document.getElementById("workingDaysCounter").textContent = workingDays;
+      document.getElementById("targetDateText").textContent = formatDate(targetDate);
+      document.getElementById("weekNumber").textContent = getCurrentWeekNumber();
+    }
+
+    window.onload = updateCounters;
   </script>
 </head>
 <body>
-  <h1>Working Days Counter</h1>
-  <p>Working days until <span id="targetDateText"></span>:</p>
-  <div id="counter" style="font-size: 2em; font-weight: bold;"></div>
+  <h1>Dashboard</h1>
+  <div class="container">
+    <!-- Current Week Section -->
+    <div class="section">
+      <h2>Current Week</h2>
+      <p>Week Number: <span id="weekNumber" class="counter"></span></p>
+    </div>
+    <!-- Working Days Counter Section -->
+    <div class="section">
+      <h2>Ankit's Days Counter</h2>
+      <p>Working days until <span id="targetDateText"></span>:</p>
+      <div id="workingDaysCounter" class="counter"></div>
+    </div>
+  </div>
 </body>
 </html>
